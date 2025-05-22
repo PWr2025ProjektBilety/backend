@@ -12,7 +12,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@DiscriminatorValue("biletJednorazowy")
 public class BiletJednorazowy extends Bilet {
     @OneToMany(mappedBy = "biletJednorazowy")
     private Set<KupionyBiletJednorazowy> kupioneBiletyJednorazowe;

@@ -10,9 +10,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @Getter
 @Setter
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="type",
-        discriminatorType = DiscriminatorType.STRING)
+@Inheritance(strategy = InheritanceType.JOINED)
 @SQLDelete(sql = "UPDATE bilet SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 public class Bilet {

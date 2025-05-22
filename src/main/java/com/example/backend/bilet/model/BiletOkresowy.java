@@ -11,7 +11,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@DiscriminatorValue("biletOkresowy")
 public class BiletOkresowy extends Bilet {
     @NotNull
     @Basic
