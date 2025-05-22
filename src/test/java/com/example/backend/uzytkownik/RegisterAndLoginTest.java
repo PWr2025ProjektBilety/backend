@@ -2,6 +2,7 @@ package com.example.backend.uzytkownik;
 
 import com.example.backend.uzytkownik.model.LoginRequest;
 import com.example.backend.uzytkownik.model.RegisterRequest;
+import com.example.backend.uzytkownik.repository.UzytkownikRepository;
 import com.example.backend.uzytkownik.service.LogowanieUzytkownikaService;
 import com.example.backend.uzytkownik.service.UzytkownikService;
 import org.junit.jupiter.api.Test;
@@ -17,9 +18,13 @@ public class RegisterAndLoginTest {
     @Autowired
     private UzytkownikService userService;
 
+    @Autowired
+    private UzytkownikRepository userRepository;
+
     @Test
     void registerAndLoginTest() throws Exception
     {
+        userRepository.deleteAll();
         registerTest();
         testLogin();
     }
