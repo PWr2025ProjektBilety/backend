@@ -4,7 +4,6 @@ import com.example.backend.uzytkownik.model.LoginRequest;
 import com.example.backend.uzytkownik.model.RegisterRequest;
 import com.example.backend.uzytkownik.service.UzytkownikService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
