@@ -6,10 +6,7 @@ import com.example.backend.uzytkownik.service.UzytkownikService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -25,7 +22,7 @@ public class UzytkownikController {
             return ResponseEntity.badRequest().body("User exists");
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
         try {
             String jwt = uzytkownikService.authenticateAndGenerateToken(request);
