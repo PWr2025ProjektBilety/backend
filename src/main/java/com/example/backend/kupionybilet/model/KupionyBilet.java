@@ -11,9 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="type",
-        discriminatorType = DiscriminatorType.STRING)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class KupionyBilet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

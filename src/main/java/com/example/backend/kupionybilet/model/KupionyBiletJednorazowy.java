@@ -9,11 +9,9 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@DiscriminatorValue("kupionyBiletJednorazowy")
 public class KupionyBiletJednorazowy extends KupionyBilet {
-    @NotNull
     @Basic
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String identyfikatorPojazu;
 
     @NotNull

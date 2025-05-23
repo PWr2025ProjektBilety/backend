@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@DiscriminatorValue("kupionyBiletOkresowy")
 public class KupionyBiletOkresowy extends KupionyBilet {
 
     @ManyToOne(optional = false)

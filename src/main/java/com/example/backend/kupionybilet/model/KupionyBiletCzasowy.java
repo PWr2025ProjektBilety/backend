@@ -11,19 +11,16 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@DiscriminatorValue("kupionyBiletCzasowy")
 public class KupionyBiletCzasowy extends KupionyBilet {
     @NotNull
     @Basic
     @Column(nullable = false)
     private boolean czySkasowany;
 
-    @NotNull
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime dataSkasowania;
 
-    @NotNull
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime dataWaznosci;
 
     @ManyToOne(optional = false)
