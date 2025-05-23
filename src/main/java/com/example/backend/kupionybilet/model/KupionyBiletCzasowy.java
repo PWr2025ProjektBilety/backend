@@ -28,4 +28,16 @@ public class KupionyBiletCzasowy extends KupionyBilet {
 
     @ManyToOne(optional = false)
     private BiletCzasowy biletCzasowy;
+
+    public boolean validate(String vehicleId) {
+        if(czySkasowany || vehicleId == null || vehicleId.isEmpty()) {
+            return false;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        this.czySkasowany = true;
+        this.dataSkasowania = now;
+        this.dataWaznosci = now.plusMinutes(biletCzasowy.getOkresWaznosci());
+        return true;
+    }
 }

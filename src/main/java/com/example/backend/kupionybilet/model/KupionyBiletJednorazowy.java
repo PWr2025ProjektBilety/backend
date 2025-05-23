@@ -23,4 +23,14 @@ public class KupionyBiletJednorazowy extends KupionyBilet {
 
     @ManyToOne(optional = false)
     private BiletJednorazowy biletJednorazowy;
+
+    public boolean validate(String vehicleId) {
+        if(czySkasowany || vehicleId == null || vehicleId.isEmpty()) {
+            return false;
+        }
+
+        this.czySkasowany = true;
+        this.identyfikatorPojazu = vehicleId;
+        return true;
+    }
 }

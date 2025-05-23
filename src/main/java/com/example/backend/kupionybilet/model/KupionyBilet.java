@@ -41,4 +41,8 @@ public class KupionyBilet {
 
     @ManyToOne(optional = false)
     private Pasazer pasazer;
+
+    public boolean validate(String vehicleId) {
+        return false;
+    }
 }
