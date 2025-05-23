@@ -24,7 +24,6 @@ public class RegisterAndLoginTest {
     @Test
     void registerAndLoginTest() throws Exception
     {
-        userRepository.deleteAll();
         registerTest();
         testLogin();
     }
