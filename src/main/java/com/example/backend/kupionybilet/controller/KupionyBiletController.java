@@ -5,8 +5,10 @@ import com.example.backend.kupionybilet.service.KupionyBiletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@PreAuthorize("hasRole('USER')")
 @RestController
 @RequestMapping("/api/boughttickets")
 public class KupionyBiletController {
