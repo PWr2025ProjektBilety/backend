@@ -21,7 +21,7 @@ public class UzytkownikController {
             return ResponseEntity.badRequest().body("User exists");
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
         try {
             String jwt = uzytkownikService.authenticateAndGenerateToken(request);
