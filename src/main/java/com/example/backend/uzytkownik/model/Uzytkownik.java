@@ -1,5 +1,6 @@
 package com.example.backend.uzytkownik.model;
 
+import com.example.backend.uzytkownik.dto.UserDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -31,4 +32,11 @@ public class Uzytkownik {
     @Column(nullable = false)
     @Basic
     private String role;
+
+    public UserDTO toDTO() {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(this.id);
+        userDTO.setLogin(this.login);
+        return userDTO;
+    }
 }

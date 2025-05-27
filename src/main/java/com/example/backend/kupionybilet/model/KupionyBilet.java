@@ -1,5 +1,6 @@
 package com.example.backend.kupionybilet.model;
 
+import com.example.backend.kupionybilet.dto.KupionyBiletDTO;
 import com.example.backend.uzytkownik.model.Pasazer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -43,4 +44,16 @@ public class KupionyBilet {
     public boolean validate(String vehicleId) {
         return false;
     }
+
+    public KupionyBiletDTO toDTO() {
+        KupionyBiletDTO dto = new KupionyBiletDTO();
+        dto.setCode(this.kod);
+        dto.setPurchaseDate(this.dataZakupu);
+        dto.setNormal(!this.czyUlgowy);
+        dto.setFinalPrice(this.koncowaCena);// Assuming a default type, adjust as necessary
+        dto.setUserDTO(this.pasazer.toDTO());
+        return dto;
+    }
+
+
 }

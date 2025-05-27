@@ -1,12 +1,19 @@
 package com.example.backend.kupionybilet.service;
 
+import com.example.backend.bilet.model.Bilet;
+import com.example.backend.bilet.repository.BiletRepository;
+import com.example.backend.kupionybilet.dto.BuyTicketRequestDTO;
+import com.example.backend.kupionybilet.dto.KupionyBiletDTO;
+import com.example.backend.kupionybilet.dto.NewTicketDTO;
 import com.example.backend.kupionybilet.model.KupionyBilet;
+import com.example.backend.kupionybilet.model.KupionyBiletFactory;
 import com.example.backend.kupionybilet.model.TicketValidationRequest;
 import com.example.backend.kupionybilet.repository.KupionyBiletRepository;
 import com.example.backend.uzytkownik.model.Pasazer;
 import com.example.backend.uzytkownik.repository.PasazerRepository;
-import com.example.backend.uzytkownik.repository.UzytkownikRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +27,10 @@ public class KupionyBiletService {
     @Autowired
     PasazerRepository pasazerRepository;
 
+    @Autowired
+    BiletRepository biletRepository;
+
+
     public boolean validateTicket(TicketValidationRequest ticketValidationRequest) {
         Optional<KupionyBilet> ticket = kupionyBiletRepository.findByKod(ticketValidationRequest.getTicketId());
         if(ticket.isEmpty()) {
@@ -28,13 +39,29 @@ public class KupionyBiletService {
         return ticket.get().validate(ticketValidationRequest.getVehicleId());
     }
 
-    public KupionyBilet buyTicket(KupionyBilet kupionyBilet) {
-        return kupionyBiletRepository.save(kupionyBilet);
-    }
+    public KupionyBiletDTO buyTicket(BuyTicketRequestDTO dto, String username) {
 
-    public List<KupionyBilet> getTicketHistory(String username) {
         Pasazer pasazer = pasazerRepository.findByLogin(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
-        return kupionyBiletRepository.findByKod(username).stream().toList();
+
+        Bilet baseTicket = biletRepository.findById(dto.getTicketId())
+                .orElseThrow(() -> new RuntimeException("Ticket not found with ID: " + dto.getTicketId()));
+
+        NewTicketDTO newTicketDTO = dto.toNewTicketDTO();
+        newTicketDTO.setBaseTicket(baseTicket);
+
+        KupionyBilet ticket = KupionyBiletFactory.createKupionyBilet(newTicketDTO);
+        ticket.setPasazer(pasazer);
+
+        return kupionyBiletRepository.save(ticket).toDTO();
+
+    }
+
+
+
+    public Page<KupionyBiletDTO> getTicketHistory(String username, Pageable pageable) {
+        Pasazer pasazer = pasazerRepository.findByLogin(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+        return kupionyBiletRepository.findAllByPasazer(pasazer, pageable).map(KupionyBilet::toDTO);
     }
 }
