@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class NewTicketDTO {
     private TicketType ticketType;
-    private boolean isNormal;
+    private boolean reduced;
     private LocalDateTime startTime;
     private Bilet baseTicket;
 

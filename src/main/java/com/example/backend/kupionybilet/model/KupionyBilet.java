@@ -49,9 +49,8 @@ public class KupionyBilet {
         KupionyBiletDTO dto = new KupionyBiletDTO();
         dto.setCode(this.kod);
         dto.setPurchaseDate(this.dataZakupu);
-        dto.setNormal(!this.czyUlgowy);
+        dto.setReduced(this.czyUlgowy);
         dto.setFinalPrice(this.koncowaCena);// Assuming a default type, adjust as necessary
-        dto.setUserDTO(this.pasazer.toDTO());
         return dto;
     }
 

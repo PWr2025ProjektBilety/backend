@@ -5,6 +5,8 @@ import com.example.backend.bilet.repository.BiletRepository;
 import com.example.backend.kupionybilet.dto.BuyTicketRequestDTO;
 import com.example.backend.kupionybilet.dto.KupionyBiletDTO;
 import com.example.backend.kupionybilet.dto.NewTicketDTO;
+import com.example.backend.kupionybilet.mapper.BuyTicketRequestMapper;
+import com.example.backend.kupionybilet.mapper.KupionyBiletMapper;
 import com.example.backend.kupionybilet.model.KupionyBilet;
 import com.example.backend.kupionybilet.model.KupionyBiletFactory;
 import com.example.backend.kupionybilet.model.TicketValidationRequest;
@@ -30,6 +32,12 @@ public class KupionyBiletService {
     @Autowired
     BiletRepository biletRepository;
 
+    @Autowired
+    KupionyBiletMapper kupionyBiletMapper;
+
+    @Autowired
+    BuyTicketRequestMapper buyTicketRequestMapper;
+
 
     public boolean validateTicket(TicketValidationRequest ticketValidationRequest) {
         Optional<KupionyBilet> ticket = kupionyBiletRepository.findByKod(ticketValidationRequest.getTicketId());
@@ -47,13 +55,13 @@ public class KupionyBiletService {
         Bilet baseTicket = biletRepository.findById(dto.getTicketId())
                 .orElseThrow(() -> new RuntimeException("Ticket not found with ID: " + dto.getTicketId()));
 
-        NewTicketDTO newTicketDTO = dto.toNewTicketDTO();
+        NewTicketDTO newTicketDTO = buyTicketRequestMapper.toNewTicketDTO(dto);
         newTicketDTO.setBaseTicket(baseTicket);
 
         KupionyBilet ticket = KupionyBiletFactory.createKupionyBilet(newTicketDTO);
         ticket.setPasazer(pasazer);
 
-        return kupionyBiletRepository.save(ticket).toDTO();
+        return kupionyBiletMapper.toDto(kupionyBiletRepository.save(ticket));
 
     }
 

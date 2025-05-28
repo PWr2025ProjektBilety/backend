@@ -9,14 +9,7 @@ import java.time.LocalDateTime;
 public class BuyTicketRequestDTO {
     private TicketType ticketType;
     private Long ticketId;
-    private boolean isNormal;
+    private boolean reduced;
     private LocalDateTime startTime;
 
-    public NewTicketDTO toNewTicketDTO() {
-        NewTicketDTO newTicketDTO = new NewTicketDTO();
-        newTicketDTO.setTicketType(ticketType);
-        newTicketDTO.setNormal(isNormal);
-        newTicketDTO.setStartTime(startTime);
-        return newTicketDTO;
-    }
 }

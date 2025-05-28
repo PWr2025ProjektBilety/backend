@@ -54,9 +54,10 @@ public class KupionyBiletFactory {
         if(bilet != null) {
             bilet.setDataZakupu(LocalDateTime.now());
             bilet.setKod(UUID.randomUUID().toString());
-            bilet.setCzyUlgowy(!dto.isNormal());
-            bilet.setKoncowaCena(dto.isNormal() ? dto.getBaseTicket().getCena() :
-                dto.getBaseTicket().getCena() * (1 - (DISCOUNT_PERCENTAGE / 100.0)));
+            bilet.setCzyUlgowy(dto.isReduced());
+            bilet.setKoncowaCena(dto.isReduced() ?
+                dto.getBaseTicket().getCena() * (1 - (DISCOUNT_PERCENTAGE / 100.0)) :
+                    dto.getBaseTicket().getCena());
         }
     }
 }
