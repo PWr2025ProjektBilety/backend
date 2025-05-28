@@ -1,6 +1,7 @@
 package com.example.backend.kupionybilet.model;
 
 import com.example.backend.bilet.model.BiletCzasowy;
+import com.example.backend.ticketValidation.TicketValidationVisitor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -37,4 +38,10 @@ public class KupionyBiletCzasowy extends KupionyBilet {
         this.dataWaznosci = now.plusMinutes(biletCzasowy.getOkresWaznosci());
         return true;
     }
+
+    @Override
+    public boolean accept(TicketValidationVisitor visitor, String vehicleId) {
+        return visitor.visit(this, vehicleId);
+    }
+
 }

@@ -10,6 +10,7 @@ import com.example.backend.uzytkownik.repository.UzytkownikRepository;
 import com.example.backend.uzytkownik.service.UzytkownikService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private final UzytkownikRepository uzytkownikRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public DataLoader(BiletRepository biletRepository, UzytkownikRepository uzytkownikRepository) {
         this.biletRepository = biletRepository;
@@ -37,7 +41,7 @@ public class DataLoader implements CommandLineRunner {
         if (uzytkownikRepository.count() == 0) {
             Bileter bileter = new Bileter();
             bileter.setLogin("bileter");
-            bileter.setHaslo("1234");
+            bileter.setHaslo(passwordEncoder.encode("1234"));
             bileter.setRole("INSPECTOR");
 
             uzytkownikRepository.save(bileter);

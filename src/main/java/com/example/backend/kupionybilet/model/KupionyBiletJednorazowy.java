@@ -1,6 +1,7 @@
 package com.example.backend.kupionybilet.model;
 
 import com.example.backend.bilet.model.BiletJednorazowy;
+import com.example.backend.ticketValidation.TicketValidationVisitor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -30,5 +31,10 @@ public class KupionyBiletJednorazowy extends KupionyBilet {
         this.czySkasowany = true;
         this.identyfikatorPojazu = vehicleId;
         return true;
+    }
+
+    @Override
+    public boolean accept(TicketValidationVisitor visitor, String vehicleId) {
+        return visitor.visit(this, vehicleId);
     }
 }

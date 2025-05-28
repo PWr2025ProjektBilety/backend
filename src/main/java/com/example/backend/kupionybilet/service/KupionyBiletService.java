@@ -70,6 +70,6 @@ public class KupionyBiletService {
     public Page<KupionyBiletDTO> getTicketHistory(String username, Pageable pageable) {
         Pasazer pasazer = pasazerRepository.findByLogin(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
-        return kupionyBiletRepository.findAllByPasazer(pasazer, pageable).map(KupionyBilet::toDTO);
+        return kupionyBiletRepository.findAllByPasazer(pasazer, pageable).map(kupionyBiletMapper::toDto);
     }
 }
