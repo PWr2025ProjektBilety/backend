@@ -16,6 +16,10 @@ public class PurchasedTicketFactory {
 
     public static PurchasedTicket createPurchasedTicket(NewTicketDTO dto) {
 
+        if (dto == null || dto.getBaseTicket() == null || dto.getTicketType() == null) {
+            throw new IllegalArgumentException("Invalid ticket data provided");
+        }
+
         PurchasedTicket ticket = null;
 
         switch (dto.getTicketType()) {

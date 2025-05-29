@@ -62,11 +62,16 @@ public class PurchasedTicketService {
         NewTicketDTO newTicketDTO = buyTicketRequestMapper.toNewTicketDTO(dto);
         newTicketDTO.setBaseTicket(baseTicket);
 
-        PurchasedTicket ticket = PurchasedTicketFactory.createPurchasedTicket(newTicketDTO);
-        ticket.setPassenger(passenger);
-        ticket.setCode(purchasedTicketCodeGenerator.generateCode());
+        try {
+            PurchasedTicket ticket = PurchasedTicketFactory.createPurchasedTicket(newTicketDTO);
+            ticket.setPassenger(passenger);
+            ticket.setCode(purchasedTicketCodeGenerator.generateCode());
 
-        return purchasedTicketMapper.toDto(purchasedTicketRepository.save(ticket));
+            return purchasedTicketMapper.toDto(purchasedTicketRepository.save(ticket));
+        }
+        catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid ticket data provided: " + e.getMessage());
+        }
 
     }
 

@@ -41,6 +41,9 @@ public class PurchasedTicketController {
         try{
             return ResponseEntity.ok(purchasedTicketService.buyTicket(request, username));
         }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
         catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
