@@ -53,7 +53,6 @@ public class PurchasedTicketFactory {
     private static void initializeBaseFields(PurchasedTicket ticket, NewTicketDTO dto) {
         if(ticket != null) {
             ticket.setPurchaseDate(LocalDateTime.now());
-            ticket.setCode(UUID.randomUUID().toString());
             ticket.setReduced(dto.isReduced());
             ticket.setFinalPrice(dto.isReduced() ?
                 dto.getBaseTicket().getPrice() * (1 - (DISCOUNT_PERCENTAGE / 100.0)) :

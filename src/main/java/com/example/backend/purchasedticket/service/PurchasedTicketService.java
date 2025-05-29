@@ -37,6 +37,9 @@ public class PurchasedTicketService {
     @Autowired
     BuyTicketRequestMapper buyTicketRequestMapper;
 
+    @Autowired
+    PurchasedTicketCodeGenerator purchasedTicketCodeGenerator;
+
 
     public boolean validateTicket(TicketValidationRequest ticketValidationRequest) {
         Optional<PurchasedTicket> ticket = purchasedTicketRepository.findByCode(ticketValidationRequest.getTicketId());
@@ -61,6 +64,7 @@ public class PurchasedTicketService {
 
         PurchasedTicket ticket = PurchasedTicketFactory.createPurchasedTicket(newTicketDTO);
         ticket.setPassenger(passenger);
+        ticket.setCode(purchasedTicketCodeGenerator.generateCode());
 
         return purchasedTicketMapper.toDto(purchasedTicketRepository.save(ticket));
 
