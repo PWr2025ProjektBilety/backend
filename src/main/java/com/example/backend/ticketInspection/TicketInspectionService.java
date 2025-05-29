@@ -1,4 +1,4 @@
-package com.example.backend.ticketValidation;
+package com.example.backend.ticketInspection;
 
 import com.example.backend.purchasedticket.model.PurchasedTicket;
 import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TicketValidationService {
+public class TicketInspectionService {
 
     @Autowired
     PurchasedTicketRepository purchasedTicketRepository;
@@ -17,7 +17,7 @@ public class TicketValidationService {
     InspectorRepository inspectorRepository;
 
 
-    public boolean validateTicket(ValidateTicketRequestDTO dto, String ticketInspectorusername){
+    public boolean validateTicket(InspectTicketRequestDTO dto, String ticketInspectorusername){
 
         PurchasedTicket purchasedTicket = purchasedTicketRepository.findByCode(dto.getTicketCode()).orElseThrow(
                 () -> new RuntimeException("Ticket not found with ID: " + dto.getTicketCode())

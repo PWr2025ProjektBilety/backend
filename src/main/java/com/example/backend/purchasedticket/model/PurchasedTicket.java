@@ -1,6 +1,6 @@
 package com.example.backend.purchasedticket.model;
 
-import com.example.backend.ticketValidation.TicketValidationVisitor;
+import com.example.backend.ticketInspection.TicketInspectionVisitor;
 import com.example.backend.user.model.Passenger;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -45,7 +45,7 @@ public class PurchasedTicket {
         return false;
     }
 
-    public boolean accept(TicketValidationVisitor visitor, String vehicleId) {
+    public boolean accept(TicketInspectionVisitor visitor, String vehicleId) {
         return false;
     }
 

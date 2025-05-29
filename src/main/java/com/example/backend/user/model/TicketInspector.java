@@ -3,7 +3,7 @@ package com.example.backend.user.model;
 import com.example.backend.purchasedticket.model.PurchasedTicketTimeBased;
 import com.example.backend.purchasedticket.model.PurchasedTicketSingleRide;
 import com.example.backend.purchasedticket.model.PurchasedTicketPeriodic;
-import com.example.backend.ticketValidation.TicketValidationVisitor;
+import com.example.backend.ticketInspection.TicketInspectionVisitor;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @DiscriminatorValue("inspector")
-public class TicketInspector extends User implements TicketValidationVisitor {
+public class TicketInspector extends User implements TicketInspectionVisitor {
 
     @Override
     public boolean visit(PurchasedTicketSingleRide ticket, String vehicleId) {

@@ -1,9 +1,9 @@
-package com.example.backend.ticketValidation;
+package com.example.backend.ticketInspection;
 
 import lombok.Data;
 
 @Data
-public class ValidateTicketRequestDTO {
+public class InspectTicketRequestDTO {
 
     private String ticketCode;
     private String vehicleId;

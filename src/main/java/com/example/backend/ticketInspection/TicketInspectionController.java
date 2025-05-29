@@ -1,4 +1,4 @@
-package com.example.backend.ticketValidation;
+package com.example.backend.ticketInspection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.*;
 
 @PreAuthorize("hasRole('INSPECTOR')")
 @RestController
-@RequestMapping("/api/ticket-validation")
-public class TicketValidationController {
+@RequestMapping("/api/ticket-inspection")
+public class TicketInspectionController {
 
     @Autowired
-    TicketValidationService ticketValidationService;
+    TicketInspectionService ticketInspectionService;
 
     @PostMapping
-    public ResponseEntity<Boolean> validateTicket(@RequestBody ValidateTicketRequestDTO request, Authentication authentication) {
+    public ResponseEntity<Boolean> validateTicket(@RequestBody InspectTicketRequestDTO request, Authentication authentication) {
 
         String username = authentication.getName();
 
         try{
-            return ResponseEntity.ok(ticketValidationService.validateTicket(request, username));
+            return ResponseEntity.ok(ticketInspectionService.validateTicket(request, username));
         }
         catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -30,6 +30,6 @@ public class TicketValidationController {
 
     @GetMapping
     public ResponseEntity<String> healthCheck() {
-        return ResponseEntity.ok("Ticket validation service is running.");
+        return ResponseEntity.ok("Ticket inspection service is running.");
     }
 }

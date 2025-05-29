@@ -1,7 +1,7 @@
 package com.example.backend.purchasedticket.model;
 
 import com.example.backend.ticket.model.TicketSingleRide;
-import com.example.backend.ticketValidation.TicketValidationVisitor;
+import com.example.backend.ticketInspection.TicketInspectionVisitor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class PurchasedTicketSingleRide extends PurchasedTicket {
     }
 
     @Override
-    public boolean accept(TicketValidationVisitor visitor, String vehicleId) {
+    public boolean accept(TicketInspectionVisitor visitor, String vehicleId) {
         return visitor.visit(this, vehicleId);
     }
 }
