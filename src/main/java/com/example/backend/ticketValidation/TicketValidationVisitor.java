@@ -1,12 +1,12 @@
 package com.example.backend.ticketValidation;
 
-import com.example.backend.kupionybilet.model.KupionyBiletCzasowy;
-import com.example.backend.kupionybilet.model.KupionyBiletJednorazowy;
-import com.example.backend.kupionybilet.model.KupionyBiletOkresowy;
+import com.example.backend.purchasedticket.model.PurchasedTicketTimeBased;
+import com.example.backend.purchasedticket.model.PurchasedTicketSingleRide;
+import com.example.backend.purchasedticket.model.PurchasedTicketPeriodic;
 
 public interface TicketValidationVisitor {
 
-    boolean visit(KupionyBiletJednorazowy ticket, String vehicleId);
-    boolean visit(KupionyBiletCzasowy ticket, String vehicleId);
-    boolean visit(KupionyBiletOkresowy ticket, String vehicleId);
+    boolean visit(PurchasedTicketSingleRide ticket, String vehicleId);
+    boolean visit(PurchasedTicketTimeBased ticket, String vehicleId);
+    boolean visit(PurchasedTicketPeriodic ticket, String vehicleId);
 }

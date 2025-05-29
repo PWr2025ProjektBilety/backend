@@ -1,11 +1,9 @@
 package com.example.backend.ticketValidation;
 
-import com.example.backend.bilet.repository.BiletRepository;
-import com.example.backend.kupionybilet.model.KupionyBilet;
-import com.example.backend.kupionybilet.repository.KupionyBiletRepository;
-import com.example.backend.uzytkownik.model.Bileter;
-import com.example.backend.uzytkownik.repository.BileterRepository;
-import jakarta.validation.Valid;
+import com.example.backend.purchasedticket.model.PurchasedTicket;
+import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
+import com.example.backend.user.model.TicketInspector;
+import com.example.backend.user.repository.InspectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,23 +11,23 @@ import org.springframework.stereotype.Service;
 public class TicketValidationService {
 
     @Autowired
-    KupionyBiletRepository kupionyBiletRepository;
+    PurchasedTicketRepository purchasedTicketRepository;
 
     @Autowired
-    BileterRepository bileterRepository;
+    InspectorRepository inspectorRepository;
 
 
     public boolean validateTicket(ValidateTicketRequestDTO dto, String ticketInspectorusername){
 
-        KupionyBilet kupionyBilet = kupionyBiletRepository.findByKod(dto.getTicketCode()).orElseThrow(
+        PurchasedTicket purchasedTicket = purchasedTicketRepository.findByCode(dto.getTicketCode()).orElseThrow(
                 () -> new RuntimeException("Ticket not found with ID: " + dto.getTicketCode())
         );
 
-        Bileter ticketInspector = bileterRepository.findByLogin(ticketInspectorusername).orElseThrow(
+        TicketInspector ticketInspector = inspectorRepository.findByLogin(ticketInspectorusername).orElseThrow(
                 () -> new RuntimeException("Ticket inspector not found with username: " + ticketInspectorusername)
         );
 
-        return kupionyBilet.accept(ticketInspector, dto.getVehicleId());
+        return purchasedTicket.accept(ticketInspector, dto.getVehicleId());
 
     }
 
