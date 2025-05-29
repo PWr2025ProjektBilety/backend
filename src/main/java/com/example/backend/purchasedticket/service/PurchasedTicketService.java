@@ -43,7 +43,9 @@ public class PurchasedTicketService {
         if(ticket.isEmpty()) {
             return false;
         }
-        return ticket.get().validate(ticketValidationRequest.getVehicleId());
+        boolean result = ticket.get().validate(ticketValidationRequest.getVehicleId());
+        purchasedTicketRepository.save(ticket.get());
+        return result;
     }
 
     public PurchasedTicketDTO buyTicket(BuyTicketRequestDTO dto, String username) {

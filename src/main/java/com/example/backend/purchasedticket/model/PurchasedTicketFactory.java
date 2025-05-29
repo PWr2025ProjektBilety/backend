@@ -19,7 +19,7 @@ public class PurchasedTicketFactory {
         PurchasedTicket ticket = null;
 
         switch (dto.getTicketType()) {
-            case BILET_JEDNORAZOWY:
+            case SINGLE_RIDE_TICKET:
                 PurchasedTicketSingleRide singleRide = new PurchasedTicketSingleRide();
                 singleRide.setValidated(false);
                 TicketSingleRide biletJednorazowy = (TicketSingleRide) dto.getBaseTicket();
@@ -27,7 +27,7 @@ public class PurchasedTicketFactory {
                 ticket = singleRide;
                 break;
 
-            case BILET_OKRESOWY:
+            case PERIODIC_TICKET:
                 PurchasedTicketPeriodic periodic = new PurchasedTicketPeriodic();
                 periodic.setValidFrom(dto.getStartTime());
                 TicketPeriodic biletOkresowy = (TicketPeriodic) dto.getBaseTicket();
@@ -36,7 +36,7 @@ public class PurchasedTicketFactory {
                 ticket = periodic;
                 break;
 
-            case BILET_CZASOWY:
+            case TIME_BASED_TICKET:
                 PurchasedTicketTimeBased timeBased = new PurchasedTicketTimeBased();
                 timeBased.setValidated(false);
                 TicketTimeBased biletCzasowy = (TicketTimeBased) dto.getBaseTicket();
