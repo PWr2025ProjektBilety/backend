@@ -71,6 +71,12 @@ public class DataLoader implements CommandLineRunner {
             biletCzasowy2.setActive(true);
             biletCzasowy2.setValidityPeriod(60L);
 
+            TicketTimeBased biletCzasowy3 = new TicketTimeBased();
+            biletCzasowy3.setPrice(15.00);
+            biletCzasowy3.setDiscountAvailable(false);
+            biletCzasowy3.setActive(true);
+            biletCzasowy3.setValidityPeriod(720L);
+
             TicketPeriodic biletOkresowy = new TicketPeriodic();
             biletOkresowy.setPrice(120.00);
             biletOkresowy.setDiscountAvailable(true);
@@ -90,7 +96,7 @@ public class DataLoader implements CommandLineRunner {
             biletOkresowy2.setValidityPeriod(180L);
 
             ticketRepository.saveAll(List.of(biletJednorazowy,
-                    biletCzasowy, biletCzasowy1, biletCzasowy2,
+                    biletCzasowy, biletCzasowy1, biletCzasowy2, biletCzasowy3,
                     biletOkresowy, biletOkresowy1, biletOkresowy2));
         }
     }

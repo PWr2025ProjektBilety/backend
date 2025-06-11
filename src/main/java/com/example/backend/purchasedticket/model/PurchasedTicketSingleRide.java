@@ -30,6 +30,7 @@ public class PurchasedTicketSingleRide extends PurchasedTicket {
 
         this.isValidated = true;
         this.vehicleId = vehicleId;
+        System.out.println("vehicleId: " + vehicleId);
         return true;
     }
 

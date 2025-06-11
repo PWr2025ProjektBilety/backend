@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,10 +55,12 @@ public class PurchasedTicketController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<PurchasedTicketDTO>> getTicketHistory(Authentication authentication,
                                                                      @RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "10") int size) {
+                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                     @RequestParam(defaultValue = "purchaseDate,desc") String[] sort) {
         String username = authentication.getName();
+        Sort sorting = Sort.by(Sort.Order.desc("purchaseDate"));
         try {
-            Pageable pageable = PageRequest.of(page, size);
+            Pageable pageable = PageRequest.of(page, size, sorting);
             return ResponseEntity.ok(purchasedTicketService.getTicketHistory(username, pageable));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

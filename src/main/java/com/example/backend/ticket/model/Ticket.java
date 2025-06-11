@@ -1,5 +1,7 @@
 package com.example.backend.ticket.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -7,6 +9,12 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = TicketSingleRide.class, name = "SINGLE_RIDE_TICKET"),
+        @JsonSubTypes.Type(value = TicketTimeBased.class, name = "TIME_BASED_TICKET"),
+        @JsonSubTypes.Type(value = TicketPeriodic.class, name = "PERIODIC_TICKET")
+})
 @Entity
 @Getter
 @Setter
