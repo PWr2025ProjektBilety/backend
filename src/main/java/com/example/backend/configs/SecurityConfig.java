@@ -13,13 +13,17 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-    @Value("${frontend.url}")
+    @Value("${frontend.url:}")
     private String frontendUrl;
+
+    @Value("${proxy.url:}")
+    private String proxyUrl;
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -41,7 +45,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of(frontendUrl));
+                    List<String> allowedOrigins = new ArrayList<>();
+                    if (frontendUrl != null && !frontendUrl.isBlank()) {
+                        allowedOrigins.add(frontendUrl);
+                    }
+                    if (proxyUrl != null && !proxyUrl.isBlank()) {
+                        allowedOrigins.add(proxyUrl);
+                    }
+
+                    config.setAllowedOrigins(allowedOrigins);
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);
