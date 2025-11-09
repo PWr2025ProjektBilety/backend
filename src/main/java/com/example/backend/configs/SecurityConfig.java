@@ -15,7 +15,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -46,7 +45,6 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-
         config.setAllowCredentials(true);
         if (frontendUrl != null && !frontendUrl.isBlank()) {
             config.addAllowedOrigin(frontendUrl);
@@ -55,11 +53,11 @@ public class SecurityConfig {
             config.addAllowedOrigin(proxyUrl);
         }
 
-        // For testing, you can allow all origins temporarily:
-        // config.addAllowedOriginPattern("*");
+        // fallback: allow all origins for local testing
+        config.addAllowedOriginPattern("*");
 
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
@@ -71,9 +69,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(request -> {
-                    return new CorsConfiguration(); // will be handled by the bean
-                }))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
                                 "/v3/api-docs/**",
