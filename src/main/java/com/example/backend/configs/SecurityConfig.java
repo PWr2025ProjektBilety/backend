@@ -12,18 +12,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+
     @Value("${frontend.url:}")
     private String frontendUrl;
 
     @Value("${proxy.url:}")
     private String proxyUrl;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -40,24 +44,35 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowCredentials(true);
+        if (frontendUrl != null && !frontendUrl.isBlank()) {
+            config.addAllowedOrigin(frontendUrl);
+        }
+        if (proxyUrl != null && !proxyUrl.isBlank()) {
+            config.addAllowedOrigin(proxyUrl);
+        }
+
+        // For testing, you can allow all origins temporarily:
+        // config.addAllowedOriginPattern("*");
+
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return new CorsFilter(source);
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    List<String> allowedOrigins = new ArrayList<>();
-                    if (frontendUrl != null && !frontendUrl.isBlank()) {
-                        allowedOrigins.add(frontendUrl);
-                    }
-                    if (proxyUrl != null && !proxyUrl.isBlank()) {
-                        allowedOrigins.add(proxyUrl);
-                    }
-
-                    config.setAllowedOrigins(allowedOrigins);
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("*"));
-                    config.setAllowCredentials(true);
-                    return config;
+                    return new CorsConfiguration(); // will be handled by the bean
                 }))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
