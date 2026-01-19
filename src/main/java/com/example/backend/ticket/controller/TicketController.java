@@ -3,15 +3,15 @@ package com.example.backend.ticket.controller;
 import com.example.backend.ticket.model.Ticket;
 import com.example.backend.ticket.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
@@ -26,5 +26,28 @@ public class TicketController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(bilety);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Ticket>> getAllTicketsForAdmin() {
+        List<Ticket> bilety = ticketService.getAllTicketsForAdmin();
+        return ResponseEntity.ok(bilety);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
+        ticketService.deleteTicket(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Ticket> createTicket(@RequestBody Ticket bilet, Authentication authentication) {
+        String currentLogin = authentication.getName();
+
+        Ticket savedBilet = ticketService.saveTicket(bilet, currentLogin);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedBilet);
     }
 }

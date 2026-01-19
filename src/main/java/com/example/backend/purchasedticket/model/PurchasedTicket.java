@@ -1,7 +1,7 @@
 package com.example.backend.purchasedticket.model;
 
 import com.example.backend.ticketInspection.TicketInspectionVisitor;
-import com.example.backend.user.model.Passenger;
+import com.example.backend.user.model.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -38,8 +38,8 @@ public class PurchasedTicket {
     @Column(nullable = false)
     private double finalPrice;
 
-    @ManyToOne(optional = false)
-    private Passenger passenger;
+    @ManyToOne
+    private User passenger;
 
     public boolean validate(String vehicleId) {
         return false;

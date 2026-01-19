@@ -1,5 +1,6 @@
 package com.example.backend.ticket.model;
 
+import com.example.backend.user.model.Admin;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
@@ -41,4 +42,7 @@ public class Ticket {
     @Column(nullable = false)
     @Basic
     private boolean isActive;
+
+    @ManyToOne(optional = false)
+    private Admin admin;
 }

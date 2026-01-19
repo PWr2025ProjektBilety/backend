@@ -9,8 +9,12 @@ import com.example.backend.purchasedticket.model.PurchasedTicketPeriodic;
 import com.example.backend.purchasedticket.model.TicketValidationRequest;
 import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
 import com.example.backend.purchasedticket.service.PurchasedTicketService;
+import com.example.backend.user.model.Admin;
 import com.example.backend.user.model.Passenger;
+import com.example.backend.user.model.User;
+import com.example.backend.user.repository.AdminRepository;
 import com.example.backend.user.repository.PassengerRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -139,6 +143,20 @@ class TicketValidationRepoTest {
     @Autowired
     private TicketRepository ticketRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
+    private Admin savedAdmin;
+
+    @BeforeEach
+    void setUp() {
+        Admin admin = new Admin();
+        admin.setLogin("admin_test");
+        admin.setPassword("password");
+        admin.setRole("ADMIN");
+        savedAdmin = adminRepository.save(admin);
+    }
+
     @Test
     void test() throws Exception {
         Passenger passenger = passengerRepository.save(getPasazer());
@@ -196,6 +214,7 @@ class TicketValidationRepoTest {
         bilet.setPrice(1);
         bilet.setDiscountAvailable(true);
         bilet.setActive(true);
+        bilet.setAdmin(savedAdmin);
         return bilet;
     }
 
@@ -205,6 +224,7 @@ class TicketValidationRepoTest {
         bilet.setDiscountAvailable(true);
         bilet.setActive(true);
         bilet.setValidityPeriod(30L);
+        bilet.setAdmin(savedAdmin);
         return bilet;
     }
 }
