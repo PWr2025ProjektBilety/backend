@@ -11,6 +11,7 @@ import com.example.backend.purchasedticket.model.PurchasedTicket;
 import com.example.backend.purchasedticket.model.PurchasedTicketFactory;
 import com.example.backend.purchasedticket.model.TicketValidationRequest;
 import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
+import com.example.backend.qr.QrPayloadService;
 import com.example.backend.user.model.Passenger;
 import com.example.backend.user.repository.PassengerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class PurchasedTicketService {
     @Autowired
     PurchasedTicketCodeGenerator purchasedTicketCodeGenerator;
 
+    @Autowired
+    QrPayloadService qrPayloadService;
+
 
     public boolean validateTicket(TicketValidationRequest ticketValidationRequest) {
         Optional<PurchasedTicket> ticket = purchasedTicketRepository.findByCode(ticketValidationRequest.getTicketId());
@@ -67,7 +71,9 @@ public class PurchasedTicketService {
             ticket.setPassenger(passenger);
             ticket.setCode(purchasedTicketCodeGenerator.generateCode());
 
-            return purchasedTicketMapper.toDto(purchasedTicketRepository.save(ticket));
+            PurchasedTicketDTO saved = purchasedTicketMapper.toDto(purchasedTicketRepository.save(ticket));
+            saved.setQrPayload(qrPayloadService.createPayload(saved.getCode()));
+            return saved;
         }
         catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid ticket data provided: " + e.getMessage());
@@ -80,6 +86,11 @@ public class PurchasedTicketService {
     public Page<PurchasedTicketDTO> getTicketHistory(String username, Pageable pageable) {
         Passenger passenger = passengerRepository.findByLogin(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
-        return purchasedTicketRepository.findAllByPassenger(passenger, pageable).map(purchasedTicketMapper::toDto);
+        return purchasedTicketRepository.findAllByPassenger(passenger, pageable)
+                .map(purchasedTicketMapper::toDto)
+                .map(dto -> {
+                    dto.setQrPayload(qrPayloadService.createPayload(dto.getCode()));
+                    return dto;
+                });
     }
 }

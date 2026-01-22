@@ -5,6 +5,7 @@ import com.example.backend.purchasedticket.model.PurchasedTicketPeriodic;
 import com.example.backend.purchasedticket.model.PurchasedTicketSingleRide;
 import com.example.backend.purchasedticket.model.PurchasedTicketTimeBased;
 import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
+import com.example.backend.qr.QrPayloadService;
 import com.example.backend.user.model.TicketInspector;
 import com.example.backend.user.repository.InspectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class TicketInspectionService {
 
     @Autowired
     InspectorRepository inspectorRepository;
+
+    @Autowired
+    QrPayloadService qrPayloadService;
 
 
     public boolean validateTicket(InspectTicketRequestDTO dto, String ticketInspectorusername){
@@ -38,11 +42,16 @@ public class TicketInspectionService {
 
     public InspectTicketResponseDTO inspectTicket(String code, InspectTicketBodyDTO request, String ticketInspectorUsername) {
 
+        String extractedCode = qrPayloadService.extractTicketCodeOrNull(code);
+        if (extractedCode == null) {
+            return InspectTicketResponseDTO.invalid("invalid-qr");
+        }
+
         inspectorRepository.findByLogin(ticketInspectorUsername).orElseThrow(
                 () -> new RuntimeException("Ticket inspector not found with username: " + ticketInspectorUsername)
         );
 
-        PurchasedTicket purchasedTicket = purchasedTicketRepository.findByCode(code).orElse(null);
+        PurchasedTicket purchasedTicket = purchasedTicketRepository.findByCode(extractedCode).orElse(null);
         if (purchasedTicket == null) {
             return InspectTicketResponseDTO.invalid("ticket-not-found");
         }

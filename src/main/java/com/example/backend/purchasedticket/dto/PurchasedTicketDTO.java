@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public  class PurchasedTicketDTO {
 
     private String code;
+    private String qrPayload;
     private LocalDateTime purchaseDate;
     private boolean reduced;
     private double finalPrice;

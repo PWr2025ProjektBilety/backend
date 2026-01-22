@@ -24,6 +24,7 @@ public interface PurchasedTicketMapper {
 
     @Mappings({
             @Mapping(source = "code", target = "code"),
+            @Mapping(source = "code", target = "qrPayload"),
             @Mapping(source = "purchaseDate", target = "purchaseDate"),
             @Mapping(source = "reduced", target = "reduced"),
             @Mapping(source = "finalPrice", target = "finalPrice"),
@@ -32,6 +33,7 @@ public interface PurchasedTicketMapper {
 
     @Mappings({
             @Mapping(source = "code", target = "code"),
+            @Mapping(source = "code", target = "qrPayload"),
             @Mapping(source = "purchaseDate", target = "purchaseDate"),
             @Mapping(source = "reduced", target = "reduced"),
             @Mapping(source = "finalPrice", target = "finalPrice"),
@@ -40,6 +42,7 @@ public interface PurchasedTicketMapper {
 
     @Mappings({
             @Mapping(source = "code", target = "code"),
+            @Mapping(source = "code", target = "qrPayload"),
             @Mapping(source = "purchaseDate", target = "purchaseDate"),
             @Mapping(source = "reduced", target = "reduced"),
             @Mapping(source = "finalPrice", target = "finalPrice"),

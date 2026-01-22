@@ -2,6 +2,7 @@ package com.example.backend.ticketInspection;
 
 import com.example.backend.purchasedticket.model.PurchasedTicket;
 import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
+import com.example.backend.qr.QrPayloadService;
 import com.example.backend.user.model.TicketInspector;
 import com.example.backend.user.repository.InspectorRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,9 @@ public class TicketInspectionServiceTest {
     private InspectorRepository inspectorRepository;
 
     @Mock
+    private QrPayloadService qrPayloadService;
+
+    @Mock
     private PurchasedTicket purchasedTicket;
 
     @Mock
@@ -42,6 +46,8 @@ public class TicketInspectionServiceTest {
         InspectTicketRequestDTO dto = new InspectTicketRequestDTO();
         dto.setTicketCode("CODE123");
         dto.setVehicleId("BUS1");
+
+        when(qrPayloadService.extractTicketCodeOrNull("CODE123")).thenReturn("CODE123");
 
         when(purchasedTicketRepository.findByCode("CODE123")).thenReturn(Optional.of(purchasedTicket));
         when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.of(ticketInspector));
@@ -61,6 +67,8 @@ public class TicketInspectionServiceTest {
         dto.setTicketCode("CODE123");
         dto.setVehicleId("BUS1");
 
+        when(qrPayloadService.extractTicketCodeOrNull("CODE123")).thenReturn("CODE123");
+
         when(purchasedTicketRepository.findByCode("CODE123")).thenReturn(Optional.of(purchasedTicket));
         when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.of(ticketInspector));
         when(purchasedTicket.accept(ticketInspector, "BUS1")).thenReturn(false);
@@ -79,6 +87,8 @@ public class TicketInspectionServiceTest {
         dto.setTicketCode("NOT_FOUND");
         dto.setVehicleId("BUS1");
 
+        when(qrPayloadService.extractTicketCodeOrNull("NOT_FOUND")).thenReturn("NOT_FOUND");
+
         when(purchasedTicketRepository.findByCode("NOT_FOUND")).thenReturn(Optional.empty());
 
         RuntimeException ex = assertThrows(RuntimeException.class, () ->
@@ -94,6 +104,8 @@ public class TicketInspectionServiceTest {
         InspectTicketRequestDTO dto = new InspectTicketRequestDTO();
         dto.setTicketCode("CODE123");
         dto.setVehicleId("BUS1");
+
+        when(qrPayloadService.extractTicketCodeOrNull("CODE123")).thenReturn("CODE123");
 
         when(purchasedTicketRepository.findByCode("CODE123")).thenReturn(Optional.of(purchasedTicket));
         when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.empty());
