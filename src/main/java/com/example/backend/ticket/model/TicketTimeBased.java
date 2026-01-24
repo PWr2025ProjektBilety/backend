@@ -6,16 +6,18 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
+@DiscriminatorValue("TIME_BASED_TICKET")
+@SQLDelete(sql = "UPDATE ticket SET is_active = false WHERE id = ?")
 public class TicketTimeBased extends Ticket {
     @NotNull
     @Basic
-    @Column(nullable = false)
     private Long validityPeriod;
 
     @JsonIgnore

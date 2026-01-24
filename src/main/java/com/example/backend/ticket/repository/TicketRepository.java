@@ -11,9 +11,11 @@ import java.util.List;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
+    List<Ticket> findByIsActiveTrue();
+
     @Override
     Optional<Ticket> findById(Long id);
 
-    @Query(value = "SELECT * FROM ticket", nativeQuery = true)
+    @Query("SELECT t FROM Ticket t")
     List<Ticket> findAllIncludingInactive();
 }

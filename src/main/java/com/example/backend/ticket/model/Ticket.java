@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -20,8 +19,8 @@ import org.hibernate.annotations.Where;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-@SQLDelete(sql = "UPDATE bilet SET is_active = false WHERE id = ?")
-@Where(clause = "is_active = true")
+@DiscriminatorColumn(name = "ticket_category", discriminatorType = DiscriminatorType.STRING)
+@SQLDelete(sql = "UPDATE ticket SET is_active = false WHERE id = ?")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

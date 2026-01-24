@@ -19,7 +19,7 @@ public class TicketService {
     private AdminRepository adminRepository;
 
     public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+        return ticketRepository.findByIsActiveTrue();
     }
 
     public List<Ticket> getAllTicketsForAdmin() {

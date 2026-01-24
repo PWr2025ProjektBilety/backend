@@ -36,7 +36,7 @@ public class TicketTest {
     @Test
     void ticketServiceTest() throws Exception
     {
-        when(ticketRepositoryMock.findAll()).thenReturn(getTickets());
+        when(ticketRepositoryMock.findByIsActiveTrue()).thenReturn(getTickets());
         List<Ticket> result = ticketService.getAllTickets();
 
         assertEquals(3, result.size());

@@ -5,6 +5,7 @@ import com.example.backend.ticket.model.TicketSingleRide;
 import com.example.backend.ticket.model.TicketPeriodic;
 import com.example.backend.ticket.repository.TicketRepository;
 import com.example.backend.user.model.TicketInspector;
+import com.example.backend.user.model.User;
 import com.example.backend.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -52,7 +53,7 @@ public class DataLoader implements CommandLineRunner {
             userRepository.save(ticketInspector);
             Admin admin = new Admin();
             admin.setLogin("admin");
-            admin.setPassword("admin");
+            admin.setPassword(passwordEncoder.encode("admin"));
             admin.setRole("ADMIN");
 
             userRepository.save(admin);
