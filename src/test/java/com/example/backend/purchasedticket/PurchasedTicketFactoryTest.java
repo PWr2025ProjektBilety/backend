@@ -1,10 +1,10 @@
 package com.example.backend.purchasedticket;
 
-import com.example.backend.purchasedticket.dto.NewTicketDTO;
-import com.example.backend.purchasedticket.model.*;
-import com.example.backend.ticket.model.TicketPeriodic;
-import com.example.backend.ticket.model.TicketSingleRide;
-import com.example.backend.ticket.model.TicketTimeBased;
+import com.example.backend.model.purchasedTicket.*;
+import com.example.backend.dto.purchasedTicket.NewTicketDTO;
+import com.example.backend.model.ticket.TicketPeriodic;
+import com.example.backend.model.ticket.TicketSingleRide;
+import com.example.backend.model.ticket.TicketTimeBased;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

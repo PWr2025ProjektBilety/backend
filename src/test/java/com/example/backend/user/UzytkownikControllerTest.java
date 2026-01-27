@@ -1,10 +1,10 @@
 package com.example.backend.user;
 
-import com.example.backend.user.controller.UserController;
-import com.example.backend.user.model.Admin;
-import com.example.backend.user.model.Passenger;
-import com.example.backend.user.model.User;
-import com.example.backend.user.service.UserService;
+import com.example.backend.controller.user.UserController;
+import com.example.backend.model.user.Admin;
+import com.example.backend.model.user.Passenger;
+import com.example.backend.model.user.User;
+import com.example.backend.service.user.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

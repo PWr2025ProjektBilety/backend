@@ -1,13 +1,17 @@
 package com.example.backend.ticketInspection;
 
-import com.example.backend.purchasedticket.model.PurchasedTicket;
-import com.example.backend.purchasedticket.model.PurchasedTicketPeriodic;
-import com.example.backend.purchasedticket.model.PurchasedTicketSingleRide;
-import com.example.backend.purchasedticket.model.PurchasedTicketTimeBased;
-import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
-import com.example.backend.qr.QrPayloadService;
-import com.example.backend.user.model.TicketInspector;
-import com.example.backend.user.repository.InspectorRepository;
+import com.example.backend.dto.ticketInspection.InspectTicketBodyDTO;
+import com.example.backend.dto.ticketInspection.InspectTicketRequestDTO;
+import com.example.backend.dto.ticketInspection.InspectTicketResponseDTO;
+import com.example.backend.model.purchasedTicket.PurchasedTicket;
+import com.example.backend.model.purchasedTicket.PurchasedTicketPeriodic;
+import com.example.backend.model.purchasedTicket.PurchasedTicketSingleRide;
+import com.example.backend.model.purchasedTicket.PurchasedTicketTimeBased;
+import com.example.backend.repository.purchasedTicket.PurchasedTicketRepository;
+import com.example.backend.service.ticketInspection.QrPayloadService;
+import com.example.backend.model.user.TicketInspector;
+import com.example.backend.repository.user.InspectorRepository;
+import com.example.backend.service.ticketInspection.TicketInspectionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

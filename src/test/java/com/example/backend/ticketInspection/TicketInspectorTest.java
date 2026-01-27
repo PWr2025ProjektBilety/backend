@@ -1,9 +1,9 @@
 package com.example.backend.ticketInspection;
 
-import com.example.backend.purchasedticket.model.PurchasedTicketPeriodic;
-import com.example.backend.purchasedticket.model.PurchasedTicketSingleRide;
-import com.example.backend.purchasedticket.model.PurchasedTicketTimeBased;
-import com.example.backend.user.model.TicketInspector;
+import com.example.backend.model.purchasedTicket.PurchasedTicketPeriodic;
+import com.example.backend.model.purchasedTicket.PurchasedTicketSingleRide;
+import com.example.backend.model.purchasedTicket.PurchasedTicketTimeBased;
+import com.example.backend.model.user.TicketInspector;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

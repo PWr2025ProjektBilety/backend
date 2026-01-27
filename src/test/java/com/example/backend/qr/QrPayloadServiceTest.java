@@ -1,5 +1,6 @@
 package com.example.backend.qr;
 
+import com.example.backend.service.ticketInspection.QrPayloadService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

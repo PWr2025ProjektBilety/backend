@@ -1,11 +1,11 @@
 package com.example.backend.ticket;
 
-import com.example.backend.ticket.model.Ticket;
-import com.example.backend.ticket.model.*;
-import com.example.backend.ticket.repository.TicketRepository;
-import com.example.backend.ticket.service.TicketService;
-import com.example.backend.user.model.Admin;
-import com.example.backend.user.repository.AdminRepository;
+import com.example.backend.model.ticket.Ticket;
+import com.example.backend.model.ticket.TicketSingleRide;
+import com.example.backend.repository.ticket.TicketRepository;
+import com.example.backend.service.ticket.TicketService;
+import com.example.backend.model.user.Admin;
+import com.example.backend.repository.user.AdminRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

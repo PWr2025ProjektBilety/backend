@@ -1,16 +1,15 @@
 package com.example.backend.user;
 
-import com.example.backend.user.model.Admin;
-import com.example.backend.user.model.*;
-import com.example.backend.user.repository.UserRepository;
-import com.example.backend.user.service.UserService;
+import com.example.backend.model.user.Admin;
+import com.example.backend.model.user.Passenger;
+import com.example.backend.model.user.User;
+import com.example.backend.repository.user.UserRepository;
+import com.example.backend.service.user.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;

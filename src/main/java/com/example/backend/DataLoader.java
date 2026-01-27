@@ -1,18 +1,17 @@
 package com.example.backend;
 
-import com.example.backend.ticket.model.TicketTimeBased;
-import com.example.backend.ticket.model.TicketSingleRide;
-import com.example.backend.ticket.model.TicketPeriodic;
-import com.example.backend.ticket.repository.TicketRepository;
-import com.example.backend.user.model.TicketInspector;
-import com.example.backend.user.model.User;
-import com.example.backend.user.repository.UserRepository;
+import com.example.backend.model.ticket.TicketTimeBased;
+import com.example.backend.model.ticket.TicketSingleRide;
+import com.example.backend.model.ticket.TicketPeriodic;
+import com.example.backend.repository.ticket.TicketRepository;
+import com.example.backend.model.user.TicketInspector;
+import com.example.backend.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import com.example.backend.user.model.Admin;
-import com.example.backend.user.repository.AdminRepository;
+import com.example.backend.model.user.Admin;
+import com.example.backend.repository.user.AdminRepository;
 
 import java.util.List;
 import java.util.Optional;

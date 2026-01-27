@@ -1,12 +1,15 @@
 package com.example.backend.user;
 
-import com.example.backend.purchasedticket.model.PurchasedTicketSingleRide;
-import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
-import com.example.backend.ticket.model.TicketSingleRide;
-import com.example.backend.ticket.repository.TicketRepository;
-import com.example.backend.user.model.*;
-import com.example.backend.user.repository.UserRepository;
-import com.example.backend.user.service.UserService;
+import com.example.backend.model.purchasedTicket.PurchasedTicketSingleRide;
+import com.example.backend.model.user.Admin;
+import com.example.backend.model.user.Passenger;
+import com.example.backend.model.user.TicketInspector;
+import com.example.backend.model.user.User;
+import com.example.backend.repository.purchasedTicket.PurchasedTicketRepository;
+import com.example.backend.model.ticket.TicketSingleRide;
+import com.example.backend.repository.ticket.TicketRepository;
+import com.example.backend.repository.user.UserRepository;
+import com.example.backend.service.user.UserService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
