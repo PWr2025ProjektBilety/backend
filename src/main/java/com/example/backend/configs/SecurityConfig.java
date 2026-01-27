@@ -52,6 +52,7 @@ public class SecurityConfig {
                                 "/api/user/register",
                                 "/api/user/login"
                         ).permitAll()
+                        .requestMatchers("/api/bonuses/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
