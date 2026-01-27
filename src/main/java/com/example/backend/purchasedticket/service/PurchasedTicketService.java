@@ -1,5 +1,6 @@
 package com.example.backend.purchasedticket.service;
 
+import com.example.backend.bonus.service.BonusService;
 import com.example.backend.ticket.model.Ticket;
 import com.example.backend.ticket.repository.TicketRepository;
 import com.example.backend.purchasedticket.dto.BuyTicketRequestDTO;
@@ -40,6 +41,9 @@ public class PurchasedTicketService {
     @Autowired
     PurchasedTicketCodeGenerator purchasedTicketCodeGenerator;
 
+    @Autowired
+    BonusService bonusService;
+
 
     public boolean validateTicket(TicketValidationRequest ticketValidationRequest) {
         Optional<PurchasedTicket> ticket = purchasedTicketRepository.findByCode(ticketValidationRequest.getTicketId());
@@ -67,7 +71,10 @@ public class PurchasedTicketService {
             ticket.setPassenger(passenger);
             ticket.setCode(purchasedTicketCodeGenerator.generateCode());
 
-            return purchasedTicketMapper.toDto(purchasedTicketRepository.save(ticket));
+            PurchasedTicket savedTicket = purchasedTicketRepository.save(ticket);
+            bonusService.addPoints(passenger, savedTicket.getFinalPrice());
+
+            return purchasedTicketMapper.toDto(savedTicket);
         }
         catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid ticket data provided: " + e.getMessage());
