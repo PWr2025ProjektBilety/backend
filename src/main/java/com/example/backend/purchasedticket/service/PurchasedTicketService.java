@@ -12,6 +12,7 @@ import com.example.backend.purchasedticket.model.PurchasedTicket;
 import com.example.backend.purchasedticket.model.PurchasedTicketFactory;
 import com.example.backend.purchasedticket.model.TicketValidationRequest;
 import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
+import com.example.backend.qr.QrPayloadService;
 import com.example.backend.user.model.Passenger;
 import com.example.backend.user.repository.PassengerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class PurchasedTicketService {
 
     @Autowired
     PurchasedTicketCodeGenerator purchasedTicketCodeGenerator;
+
+    @Autowired
+    QrPayloadService qrPayloadService;
 
     @Autowired
     BonusService bonusService;
@@ -74,7 +78,9 @@ public class PurchasedTicketService {
             PurchasedTicket savedTicket = purchasedTicketRepository.save(ticket);
             bonusService.addPoints(passenger, savedTicket.getFinalPrice());
 
-            return purchasedTicketMapper.toDto(savedTicket);
+            PurchasedTicketDTO saved = purchasedTicketMapper.toDto(savedTicket);
+            saved.setQrPayload(qrPayloadService.createPayload(saved.getCode()));
+            return saved;
         }
         catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid ticket data provided: " + e.getMessage());
@@ -87,6 +93,11 @@ public class PurchasedTicketService {
     public Page<PurchasedTicketDTO> getTicketHistory(String username, Pageable pageable) {
         Passenger passenger = passengerRepository.findByLogin(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
-        return purchasedTicketRepository.findAllByPassenger(passenger, pageable).map(purchasedTicketMapper::toDto);
+        return purchasedTicketRepository.findAllByPassenger(passenger, pageable)
+                .map(purchasedTicketMapper::toDto)
+                .map(dto -> {
+                    dto.setQrPayload(qrPayloadService.createPayload(dto.getCode()));
+                    return dto;
+                });
     }
 }
