@@ -1,16 +1,19 @@
 package com.example.backend.purchasedticket;
 
-import com.example.backend.ticket.model.TicketSingleRide;
-import com.example.backend.ticket.model.TicketPeriodic;
-import com.example.backend.ticket.repository.TicketRepository;
-import com.example.backend.purchasedticket.model.PurchasedTicket;
-import com.example.backend.purchasedticket.model.PurchasedTicketSingleRide;
-import com.example.backend.purchasedticket.model.PurchasedTicketPeriodic;
-import com.example.backend.purchasedticket.model.TicketValidationRequest;
-import com.example.backend.purchasedticket.repository.PurchasedTicketRepository;
-import com.example.backend.purchasedticket.service.PurchasedTicketService;
-import com.example.backend.user.model.Passenger;
-import com.example.backend.user.repository.PassengerRepository;
+import com.example.backend.model.ticket.TicketSingleRide;
+import com.example.backend.model.ticket.TicketPeriodic;
+import com.example.backend.repository.ticket.TicketRepository;
+import com.example.backend.model.purchasedTicket.PurchasedTicket;
+import com.example.backend.model.purchasedTicket.PurchasedTicketSingleRide;
+import com.example.backend.model.purchasedTicket.PurchasedTicketPeriodic;
+import com.example.backend.model.purchasedTicket.TicketValidationRequest;
+import com.example.backend.repository.purchasedTicket.PurchasedTicketRepository;
+import com.example.backend.service.purchasedTicket.PurchasedTicketService;
+import com.example.backend.model.user.Admin;
+import com.example.backend.model.user.Passenger;
+import com.example.backend.repository.user.AdminRepository;
+import com.example.backend.repository.user.PassengerRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -139,6 +142,20 @@ class TicketValidationRepoTest {
     @Autowired
     private TicketRepository ticketRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
+    private Admin savedAdmin;
+
+    @BeforeEach
+    void setUp() {
+        Admin admin = new Admin();
+        admin.setLogin("admin_test");
+        admin.setPassword("password");
+        admin.setRole("ADMIN");
+        savedAdmin = adminRepository.save(admin);
+    }
+
     @Test
     void test() throws Exception {
         Passenger passenger = passengerRepository.save(getPasazer());
@@ -196,6 +213,7 @@ class TicketValidationRepoTest {
         bilet.setPrice(1);
         bilet.setDiscountAvailable(true);
         bilet.setActive(true);
+        bilet.setAdmin(savedAdmin);
         return bilet;
     }
 
@@ -205,6 +223,7 @@ class TicketValidationRepoTest {
         bilet.setDiscountAvailable(true);
         bilet.setActive(true);
         bilet.setValidityPeriod(30L);
+        bilet.setAdmin(savedAdmin);
         return bilet;
     }
 }

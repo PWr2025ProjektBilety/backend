@@ -1,14 +1,15 @@
 package com.example.backend.ticketInspection;
 
+import com.example.backend.controller.ticketInspection.TicketInspectionController;
+import com.example.backend.dto.ticketInspection.InspectTicketRequestDTO;
+import com.example.backend.service.ticketInspection.TicketInspectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 

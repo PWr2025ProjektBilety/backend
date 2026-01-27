@@ -1,9 +1,9 @@
 package com.example.backend.user;
 
-import com.example.backend.user.model.LoginRequest;
-import com.example.backend.user.model.RegisterRequest;
-import com.example.backend.user.repository.UserRepository;
-import com.example.backend.user.service.UserService;
+import com.example.backend.model.user.LoginRequest;
+import com.example.backend.model.user.RegisterRequest;
+import com.example.backend.repository.user.UserRepository;
+import com.example.backend.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

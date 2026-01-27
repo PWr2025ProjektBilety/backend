@@ -1,6 +1,6 @@
 package com.example.backend.configs;
 
-import com.example.backend.user.service.JwtService;
+import com.example.backend.service.user.JwtService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -42,7 +42,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             List<String> roles = claims.get("roles", List.class);
             var authorities = roles.stream()
-                    .map(SimpleGrantedAuthority::new)
+                    .map(role -> {
+                        if (role.startsWith("ROLE_")) {
+                            return new SimpleGrantedAuthority(role);
+                        }
+                        return new SimpleGrantedAuthority("ROLE_" + role);
+                    })
                     .collect(Collectors.toList());
 
             var authToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
