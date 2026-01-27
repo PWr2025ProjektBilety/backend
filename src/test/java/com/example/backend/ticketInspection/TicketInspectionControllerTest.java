@@ -50,6 +50,21 @@ public class TicketInspectionControllerTest {
 
     @Test
     @WithMockUser(roles = "INSPECTOR")
+    void shouldReturnOkAndFalse_whenValidateTicketIsNotSuccessful() throws Exception {
+        InspectTicketRequestDTO request = new InspectTicketRequestDTO();
+        Mockito.when(ticketInspectionService.validateTicket(any(), eq("inspectorUser"))).thenReturn(false);
+
+        mockMvc.perform(post("/api/ticket-inspection")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(jwt().authorities(createAuthorityList("ROLE_INSPECTOR"))
+                                .jwt(jwt -> jwt.subject("inspectorUser"))))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+    }
+
+    @Test
+    @WithMockUser(roles = "INSPECTOR")
     void shouldReturnNotFound_whenValidateTicketThrowsException() throws Exception {
         InspectTicketRequestDTO request = new InspectTicketRequestDTO();
         Mockito.when(ticketInspectionService.validateTicket(any(), eq("inspectorUser")))

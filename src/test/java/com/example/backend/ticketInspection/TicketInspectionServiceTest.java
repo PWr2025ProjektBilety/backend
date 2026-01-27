@@ -3,7 +3,6 @@ package com.example.backend.ticketInspection;
 import com.example.backend.dto.ticketInspection.InspectTicketBodyDTO;
 import com.example.backend.dto.ticketInspection.InspectTicketRequestDTO;
 import com.example.backend.dto.ticketInspection.InspectTicketResponseDTO;
-import com.example.backend.model.purchasedTicket.PurchasedTicket;
 import com.example.backend.model.purchasedTicket.PurchasedTicketPeriodic;
 import com.example.backend.model.purchasedTicket.PurchasedTicketSingleRide;
 import com.example.backend.model.purchasedTicket.PurchasedTicketTimeBased;
@@ -39,9 +38,6 @@ public class TicketInspectionServiceTest {
     private QrPayloadService qrPayloadService;
 
     @Mock
-    private PurchasedTicket purchasedTicket;
-
-    @Mock
     private TicketInspector ticketInspector;
 
     @BeforeEach
@@ -50,55 +46,58 @@ public class TicketInspectionServiceTest {
     }
 
     @Test
-    void shouldReturnTrue_whenTicketAndInspectorFoundAndAccepted() {
+    void validateTicket_shouldReturnTrue_whenSingleRideValidatedAndSameVehicle() {
         InspectTicketRequestDTO dto = new InspectTicketRequestDTO();
         dto.setTicketCode("CODE123");
         dto.setVehicleId("BUS1");
 
-        when(purchasedTicketRepository.findByCode("CODE123")).thenReturn(Optional.of(purchasedTicket));
-        when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.of(ticketInspector));
-        when(purchasedTicket.accept(ticketInspector, "BUS1")).thenReturn(true);
+        PurchasedTicketSingleRide singleRide = mock(PurchasedTicketSingleRide.class);
+        when(singleRide.isValidated()).thenReturn(true);
+        when(singleRide.getVehicleId()).thenReturn("BUS1");
+
+        when(purchasedTicketRepository.findByCode("CODE123")).thenReturn(Optional.of(singleRide));
+        when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.of(mock(TicketInspector.class)));
 
         boolean result = ticketInspectionService.validateTicket(dto, "inspectorUser");
 
         assertTrue(result);
         verify(purchasedTicketRepository).findByCode("CODE123");
         verify(inspectorRepository).findByLogin("inspectorUser");
-        verify(purchasedTicket).accept(ticketInspector, "BUS1");
     }
 
     @Test
-    void shouldReturnFalse_whenTicketAndInspectorFoundAndTicketNotAccepted() {
+    void validateTicket_shouldReturnFalse_whenSingleRideNotValidated() {
         InspectTicketRequestDTO dto = new InspectTicketRequestDTO();
         dto.setTicketCode("CODE123");
         dto.setVehicleId("BUS1");
 
-        when(purchasedTicketRepository.findByCode("CODE123")).thenReturn(Optional.of(purchasedTicket));
-        when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.of(ticketInspector));
-        when(purchasedTicket.accept(ticketInspector, "BUS1")).thenReturn(false);
+        PurchasedTicketSingleRide singleRide = mock(PurchasedTicketSingleRide.class);
+        when(singleRide.isValidated()).thenReturn(false);
+
+        when(purchasedTicketRepository.findByCode("CODE123")).thenReturn(Optional.of(singleRide));
+        when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.of(mock(TicketInspector.class)));
 
         boolean result = ticketInspectionService.validateTicket(dto, "inspectorUser");
 
         assertFalse(result);
         verify(purchasedTicketRepository).findByCode("CODE123");
         verify(inspectorRepository).findByLogin("inspectorUser");
-        verify(purchasedTicket).accept(ticketInspector, "BUS1");
     }
 
     @Test
-    void shouldThrowException_whenTicketNotFound() {
+    void validateTicket_shouldReturnFalse_whenTicketNotFound() {
         InspectTicketRequestDTO dto = new InspectTicketRequestDTO();
         dto.setTicketCode("NOT_FOUND");
         dto.setVehicleId("BUS1");
 
         when(purchasedTicketRepository.findByCode("NOT_FOUND")).thenReturn(Optional.empty());
+        when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.of(mock(TicketInspector.class)));
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () ->
-                ticketInspectionService.validateTicket(dto, "inspectorUser")
-        );
-        assertTrue(ex.getMessage().contains("Ticket not found"));
+        boolean result = ticketInspectionService.validateTicket(dto, "inspectorUser");
+
+        assertFalse(result);
         verify(purchasedTicketRepository).findByCode("NOT_FOUND");
-        verifyNoInteractions(inspectorRepository);
+        verify(inspectorRepository).findByLogin("inspectorUser");
     }
 
     @Test
@@ -107,16 +106,14 @@ public class TicketInspectionServiceTest {
         dto.setTicketCode("CODE123");
         dto.setVehicleId("BUS1");
 
-        when(purchasedTicketRepository.findByCode("CODE123")).thenReturn(Optional.of(purchasedTicket));
         when(inspectorRepository.findByLogin("inspectorUser")).thenReturn(Optional.empty());
 
         RuntimeException ex = assertThrows(RuntimeException.class, () ->
                 ticketInspectionService.validateTicket(dto, "inspectorUser")
         );
         assertTrue(ex.getMessage().contains("Ticket inspector not found"));
-        verify(purchasedTicketRepository).findByCode("CODE123");
         verify(inspectorRepository).findByLogin("inspectorUser");
-        verifyNoMoreInteractions(purchasedTicket);
+        verifyNoInteractions(purchasedTicketRepository);
     }
 
     @Test
