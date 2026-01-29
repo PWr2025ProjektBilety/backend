@@ -50,6 +50,29 @@ public class PurchasedTicketController {
         }
     }
 
+    @PostMapping("/buy-with-points")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> buyTicketWithPoints(@RequestParam Long ticketId, Authentication authentication) {
+        String userLogin = authentication.getName();
+        try {
+            PurchasedTicketDTO ticket = purchasedTicketService.buyTicketWithPoints(ticketId, userLogin);
+            return ResponseEntity.ok(ticket);
+        }
+        catch (RuntimeException e) {
+            if (e.getMessage().contains("Niewystarczająca liczba punktów")) {
+                return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED)
+                        .body("Niewystarczająca liczba punktów. " + e.getMessage());
+            }
+            else if (e.getMessage().contains("not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(e.getMessage());
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Błąd podczas kupowania biletu: " + e.getMessage());
+            }
+        }
+    }
 
     @GetMapping("/history")
     @PreAuthorize("isAuthenticated()")

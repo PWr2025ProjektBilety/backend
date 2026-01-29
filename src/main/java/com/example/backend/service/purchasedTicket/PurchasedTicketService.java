@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -59,6 +61,7 @@ public class PurchasedTicketService {
         return result;
     }
 
+    @Transactional
     public PurchasedTicketDTO buyTicket(BuyTicketRequestDTO dto, String username) {
 
         Passenger passenger = passengerRepository.findByLogin(username)
@@ -88,7 +91,47 @@ public class PurchasedTicketService {
 
     }
 
+    @Transactional
+    public PurchasedTicketDTO buyTicketWithPoints(Long ticketId, String userLogin) {
+        // Pobierz pasażera
+        Passenger passenger = passengerRepository.findByLogin(userLogin)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userLogin));
 
+        // Pobierz bilet z repozytorium
+        Ticket baseTicket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found with ID: " + ticketId));
+
+        // Oblicz koszt: cena * 100 (w punktach)
+        // Używamy BigDecimal dla precyzji
+        BigDecimal ticketPrice = new BigDecimal(baseTicket.getPrice());
+        BigDecimal costInPoints = ticketPrice.multiply(new BigDecimal(100));
+        int requiredPoints = costInPoints.intValue();
+
+        // Odejmij punkty - ta operacja rzuci RuntimeException jeśli nie ma wystarczających punktów
+        bonusService.deductPoints(passenger, requiredPoints);
+
+        // Stwórz nowy bilet w bazie z statusem "opłacony"
+        try {
+            NewTicketDTO newTicketDTO = new NewTicketDTO();
+            newTicketDTO.setBaseTicket(baseTicket);
+            // Flaga, że bilet jest opłacony (zależy od implementacji PurchasedTicketFactory)
+            newTicketDTO.setReduced(false); // domyślnie zwykła cena, nie ulgowa
+
+            PurchasedTicket ticket = PurchasedTicketFactory.createPurchasedTicket(newTicketDTO);
+            ticket.setPassenger(passenger);
+            ticket.setCode(purchasedTicketCodeGenerator.generateCode());
+
+            PurchasedTicket savedTicket = purchasedTicketRepository.save(ticket);
+
+            PurchasedTicketDTO saved = purchasedTicketMapper.toDto(savedTicket);
+            saved.setQrPayload(qrPayloadService.createPayload(saved.getCode()));
+            return saved;
+        }
+        catch (IllegalArgumentException e) {
+            // Jeśli zapis biletu się nie powiedzie, to @Transactional cofnie odejmowanie punktów
+            throw new RuntimeException("Failed to create ticket: " + e.getMessage());
+        }
+    }
 
     public Page<PurchasedTicketDTO> getTicketHistory(String username, Pageable pageable) {
         Passenger passenger = passengerRepository.findByLogin(username)

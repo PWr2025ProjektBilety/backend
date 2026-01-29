@@ -5,6 +5,7 @@ import com.example.backend.repository.bonus.BonusRepository;
 import com.example.backend.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ public class BonusService {
 
     private static final int POINTS_PER_PLN = 10;
 
+    @Transactional
     public void addPoints(User user, Double amount) {
         if (user == null || amount == null || amount < 0) {
             return;
@@ -41,5 +43,22 @@ public class BonusService {
 
         Optional<Bonus> bonus = bonusRepository.findByUser(user);
         return bonus.map(Bonus::getPoints).orElse(0);
+    }
+
+    @Transactional
+    public void deductPoints(User user, Integer points) {
+        if (user == null || points == null || points <= 0) {
+            throw new RuntimeException("Invalid deduction parameters: user or points");
+        }
+
+        Bonus bonus = bonusRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Bonus account not found for user: " + user.getLogin()));
+
+        if (bonus.getPoints() < points) {
+            throw new RuntimeException("Niewystarczająca liczba punktów");
+        }
+
+        bonus.setPoints(bonus.getPoints() - points);
+        bonusRepository.save(bonus);
     }
 }
