@@ -2,6 +2,9 @@ package com.example.backend.service.purchasedTicket;
 
 import com.example.backend.service.bonus.BonusService;
 import com.example.backend.model.ticket.Ticket;
+import com.example.backend.model.ticket.TicketSingleRide;
+import com.example.backend.model.ticket.TicketTimeBased;
+import com.example.backend.model.ticket.TicketPeriodic;
 import com.example.backend.repository.ticket.TicketRepository;
 import com.example.backend.dto.purchasedTicket.BuyTicketRequestDTO;
 import com.example.backend.dto.purchasedTicket.PurchasedTicketDTO;
@@ -10,6 +13,7 @@ import com.example.backend.mapper.purchasedTicket.BuyTicketRequestMapper;
 import com.example.backend.mapper.purchasedTicket.PurchasedTicketMapper;
 import com.example.backend.model.purchasedTicket.PurchasedTicket;
 import com.example.backend.model.purchasedTicket.PurchasedTicketFactory;
+import com.example.backend.model.purchasedTicket.TicketType;
 import com.example.backend.model.purchasedTicket.TicketValidationRequest;
 import com.example.backend.repository.purchasedTicket.PurchasedTicketRepository;
 import com.example.backend.service.ticketInspection.QrPayloadService;
@@ -114,8 +118,18 @@ public class PurchasedTicketService {
         try {
             NewTicketDTO newTicketDTO = new NewTicketDTO();
             newTicketDTO.setBaseTicket(baseTicket);
-            // Flaga, że bilet jest opłacony (zależy od implementacji PurchasedTicketFactory)
             newTicketDTO.setReduced(false); // domyślnie zwykła cena, nie ulgowa
+            
+            // Określ typ biletu na podstawie instancji
+            if (baseTicket instanceof TicketSingleRide) {
+                newTicketDTO.setTicketType(TicketType.SINGLE_RIDE_TICKET);
+            } else if (baseTicket instanceof TicketTimeBased) {
+                newTicketDTO.setTicketType(TicketType.TIME_BASED_TICKET);
+            } else if (baseTicket instanceof TicketPeriodic) {
+                newTicketDTO.setTicketType(TicketType.PERIODIC_TICKET);
+                // Dla biletów okresowych ustaw czas startu
+                newTicketDTO.setStartTime(java.time.LocalDateTime.now());
+            }
 
             PurchasedTicket ticket = PurchasedTicketFactory.createPurchasedTicket(newTicketDTO);
             ticket.setPassenger(passenger);

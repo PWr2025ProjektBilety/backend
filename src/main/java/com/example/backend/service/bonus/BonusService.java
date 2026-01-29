@@ -14,7 +14,7 @@ public class BonusService {
     @Autowired
     private BonusRepository bonusRepository;
 
-    private static final int POINTS_PER_PLN = 10;
+    private static final int POINTS_PER_PLN = 1;
 
     @Transactional
     public void addPoints(User user, Double amount) {
