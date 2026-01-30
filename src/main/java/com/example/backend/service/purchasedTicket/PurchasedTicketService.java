@@ -54,8 +54,14 @@ public class PurchasedTicketService {
     @Autowired
     BonusService bonusService;
 
+    @Autowired
+    VehicleTicketValidationLockService vehicleTicketValidationLockService;
+
 
     public boolean validateTicket(TicketValidationRequest ticketValidationRequest) {
+        if (vehicleTicketValidationLockService.isLocked(ticketValidationRequest.getVehicleId())) {
+            return false;
+        }
         Optional<PurchasedTicket> ticket = purchasedTicketRepository.findByCode(ticketValidationRequest.getTicketId());
         if(ticket.isEmpty()) {
             return false;

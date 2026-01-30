@@ -9,6 +9,7 @@ import com.example.backend.model.purchasedTicket.PurchasedTicketPeriodic;
 import com.example.backend.model.purchasedTicket.TicketValidationRequest;
 import com.example.backend.repository.purchasedTicket.PurchasedTicketRepository;
 import com.example.backend.service.purchasedTicket.PurchasedTicketService;
+import com.example.backend.service.purchasedTicket.VehicleTicketValidationLockService;
 import com.example.backend.model.user.Admin;
 import com.example.backend.model.user.Passenger;
 import com.example.backend.repository.user.AdminRepository;
@@ -33,12 +34,16 @@ public class TicketValidationTest {
     @Mock
     private PurchasedTicketRepository purchasedTicketRepositoryMock;
 
+    @Mock
+    private VehicleTicketValidationLockService vehicleTicketValidationLockService;
+
     @InjectMocks
     private PurchasedTicketService purchasedTicketService;
 
     @Test
     void serviceTestNoValidatedTicket() throws Exception {
         when(purchasedTicketRepositoryMock.findByCode("1234abcd")).thenReturn(getBoughtTicket(false));
+        when(vehicleTicketValidationLockService.isLocked("7654")).thenReturn(false);
         TicketValidationRequest ticketValidationRequest = new TicketValidationRequest();
         ticketValidationRequest.setTicketId("1234abcd");
         ticketValidationRequest.setVehicleId("7654");
@@ -50,6 +55,19 @@ public class TicketValidationTest {
     @Test
     void serviceTestValidatedTicket() throws Exception {
         when(purchasedTicketRepositoryMock.findByCode("1234abcd")).thenReturn(getBoughtTicket(true));
+        when(vehicleTicketValidationLockService.isLocked("7654")).thenReturn(false);
+        TicketValidationRequest ticketValidationRequest = new TicketValidationRequest();
+        ticketValidationRequest.setTicketId("1234abcd");
+        ticketValidationRequest.setVehicleId("7654");
+
+        boolean result = purchasedTicketService.validateTicket(ticketValidationRequest);
+        assertFalse(result);
+    }
+
+    @Test
+    void serviceTestVehicleLocked() {
+        when(vehicleTicketValidationLockService.isLocked("7654")).thenReturn(true);
+
         TicketValidationRequest ticketValidationRequest = new TicketValidationRequest();
         ticketValidationRequest.setTicketId("1234abcd");
         ticketValidationRequest.setVehicleId("7654");
@@ -61,6 +79,7 @@ public class TicketValidationTest {
     @Test
     void serviceTestNoTicket() throws Exception {
         when(purchasedTicketRepositoryMock.findByCode("1234abcd")).thenReturn(Optional.empty());
+        when(vehicleTicketValidationLockService.isLocked("7654")).thenReturn(false);
         TicketValidationRequest ticketValidationRequest = new TicketValidationRequest();
         ticketValidationRequest.setTicketId("1234abcd");
         ticketValidationRequest.setVehicleId("7654");
@@ -72,6 +91,7 @@ public class TicketValidationTest {
     @Test
     void serviceTestOkresowyTicket() throws Exception {
         when(purchasedTicketRepositoryMock.findByCode("1234abcd")).thenReturn(getBoughtOkresowyTicket());
+        when(vehicleTicketValidationLockService.isLocked("7654")).thenReturn(false);
         TicketValidationRequest ticketValidationRequest = new TicketValidationRequest();
         ticketValidationRequest.setTicketId("1234abcd");
         ticketValidationRequest.setVehicleId("7654");
