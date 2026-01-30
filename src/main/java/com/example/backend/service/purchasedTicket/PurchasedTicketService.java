@@ -96,8 +96,7 @@ public class PurchasedTicketService {
     }
 
     @Transactional
-    public PurchasedTicketDTO buyTicketWithPoints(Long ticketId, String userLogin) {
-        // Pobierz pasażera
+    public PurchasedTicketDTO buyTicketWithPoints(Long ticketId, String userLogin, boolean discounted) {
         Passenger passenger = passengerRepository.findByLogin(userLogin)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userLogin));
 
@@ -105,21 +104,23 @@ public class PurchasedTicketService {
         Ticket baseTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found with ID: " + ticketId));
 
-        // Oblicz koszt: cena * 100 (w punktach)
-        // Używamy BigDecimal dla precyzji
+        // Oblicz koszt: jeśli discounted, cena/2 * 100, jeśli nie, cena * 100
         BigDecimal ticketPrice = new BigDecimal(baseTicket.getPrice());
+        if (discounted) {
+            ticketPrice = ticketPrice.divide(new BigDecimal(2), 2, BigDecimal.ROUND_HALF_UP);
+        }
         BigDecimal costInPoints = ticketPrice.multiply(new BigDecimal(100));
         int requiredPoints = costInPoints.intValue();
 
         // Odejmij punkty - ta operacja rzuci RuntimeException jeśli nie ma wystarczających punktów
         bonusService.deductPoints(passenger, requiredPoints);
 
-        // Stwórz nowy bilet w bazie z statusem "opłacony"
+        // Stwórz nowy bilet w bazie z odpowiednią flagą reduced
         try {
             NewTicketDTO newTicketDTO = new NewTicketDTO();
             newTicketDTO.setBaseTicket(baseTicket);
-            newTicketDTO.setReduced(false); // domyślnie zwykła cena, nie ulgowa
-            
+            newTicketDTO.setReduced(discounted);
+
             // Określ typ biletu na podstawie instancji
             if (baseTicket instanceof TicketSingleRide) {
                 newTicketDTO.setTicketType(TicketType.SINGLE_RIDE_TICKET);
@@ -146,7 +147,6 @@ public class PurchasedTicketService {
             throw new RuntimeException("Failed to create ticket: " + e.getMessage());
         }
     }
-
     public Page<PurchasedTicketDTO> getTicketHistory(String username, Pageable pageable) {
         Passenger passenger = passengerRepository.findByLogin(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));

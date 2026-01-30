@@ -52,10 +52,10 @@ public class PurchasedTicketController {
 
     @PostMapping("/buy-with-points")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> buyTicketWithPoints(@RequestParam Long ticketId, Authentication authentication) {
+    public ResponseEntity<?> buyTicketWithPoints(@RequestParam Long ticketId, @RequestParam boolean discounted, Authentication authentication) {
         String userLogin = authentication.getName();
         try {
-            PurchasedTicketDTO ticket = purchasedTicketService.buyTicketWithPoints(ticketId, userLogin);
+            PurchasedTicketDTO ticket = purchasedTicketService.buyTicketWithPoints(ticketId, userLogin, discounted);
             return ResponseEntity.ok(ticket);
         }
         catch (RuntimeException e) {
