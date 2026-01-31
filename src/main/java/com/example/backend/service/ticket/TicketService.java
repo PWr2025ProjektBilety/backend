@@ -36,6 +36,9 @@ public class TicketService {
     public Ticket saveTicket(Ticket bilet, String adminLogin) {
         Admin admin = adminRepository.findByLogin(adminLogin)
                 .orElseThrow(() -> new RuntimeException("Zalogowany użytkownik nie jest adminem lub nie istnieje"));
+        if (bilet.getPrice() <= 0 || bilet.getPrice() > 100000) {
+            throw new IllegalArgumentException("Nieprawidłowa cena biletu");
+        }
 
         bilet.setAdmin(admin);
         bilet.setActive(true);

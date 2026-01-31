@@ -30,16 +30,11 @@ public class TicketInspectionService {
 
     public boolean validateTicket(InspectTicketRequestDTO dto, String ticketInspectorusername){
 
-        PurchasedTicket purchasedTicket = purchasedTicketRepository.findByCode(dto.getTicketCode()).orElseThrow(
-                () -> new RuntimeException("Ticket not found with ID: " + dto.getTicketCode())
-        );
+        String ticketCode = dto.getTicketCode() == null ? "" : dto.getTicketCode().trim();
+        String vehicleId = dto.getVehicleId() == null ? "" : dto.getVehicleId().trim();
 
-        TicketInspector ticketInspector = inspectorRepository.findByLogin(ticketInspectorusername).orElseThrow(
-                () -> new RuntimeException("Ticket inspector not found with username: " + ticketInspectorusername)
-        );
-
-        return purchasedTicket.accept(ticketInspector, dto.getVehicleId());
-
+        InspectTicketResponseDTO res = inspectTicketByCode(ticketCode, vehicleId, ticketInspectorusername);
+        return "valid".equals(res.getStatus());
     }
 
     public InspectTicketResponseDTO inspectTicket(String code, InspectTicketBodyDTO request, String ticketInspectorUsername) {
@@ -49,16 +44,27 @@ public class TicketInspectionService {
             return InspectTicketResponseDTO.invalid("invalid-qr");
         }
 
+        String vehicleId = request.getVehicleId() == null ? "" : request.getVehicleId().trim();
+        return inspectTicketByCode(extractedCode, vehicleId, ticketInspectorUsername);
+    }
+
+    private InspectTicketResponseDTO inspectTicketByCode(String ticketCode, String vehicleId, String ticketInspectorUsername) {
+
+        String code = ticketCode == null ? "" : ticketCode.trim();
+        if (code.isEmpty()) {
+            return InspectTicketResponseDTO.invalid("ticket-not-found");
+        }
+
         inspectorRepository.findByLogin(ticketInspectorUsername).orElseThrow(
                 () -> new RuntimeException("Ticket inspector not found with username: " + ticketInspectorUsername)
         );
 
-        PurchasedTicket purchasedTicket = purchasedTicketRepository.findByCode(extractedCode).orElse(null);
+        PurchasedTicket purchasedTicket = purchasedTicketRepository.findByCode(code).orElse(null);
         if (purchasedTicket == null) {
             return InspectTicketResponseDTO.invalid("ticket-not-found");
         }
 
-        String vehicleId = request.getVehicleId() == null ? "" : request.getVehicleId().trim();
+        String normalizedVehicleId = vehicleId == null ? "" : vehicleId.trim();
         LocalDateTime now = LocalDateTime.now();
 
         if (purchasedTicket instanceof PurchasedTicketSingleRide singleRide) {
@@ -66,7 +72,7 @@ public class TicketInspectionService {
                 return InspectTicketResponseDTO.invalid("ticket-not-validated");
             }
 
-            if (singleRide.getVehicleId() == null || !singleRide.getVehicleId().equals(vehicleId)) {
+            if (singleRide.getVehicleId() == null || !singleRide.getVehicleId().equals(normalizedVehicleId)) {
                 return InspectTicketResponseDTO.invalid("ticket-not-valid-for-vehicle");
             }
 

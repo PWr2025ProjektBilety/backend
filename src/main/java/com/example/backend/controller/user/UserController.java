@@ -5,6 +5,7 @@ import com.example.backend.model.user.RegisterRequest;
 import com.example.backend.model.user.User;
 import com.example.backend.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class UserController {
         if(userService.registerUser(request))
             return ResponseEntity.ok("User registered successfully");
         else
-            return ResponseEntity.badRequest().body("User exists");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
     }
 
     @PostMapping("/login")

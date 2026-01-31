@@ -84,6 +84,7 @@ public class SecurityConfig {
                                 "/h2-console/**"
                         ).permitAll()
                         .requestMatchers("/api/bonuses/**").authenticated()
+                        .requestMatchers("/api/boughttickets/buy-with-points").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
