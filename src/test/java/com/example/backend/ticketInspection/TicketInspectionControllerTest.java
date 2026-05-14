@@ -1,14 +1,15 @@
 package com.example.backend.ticketInspection;
 
+import com.example.backend.controller.ticketInspection.TicketInspectionController;
+import com.example.backend.dto.ticketInspection.InspectTicketRequestDTO;
+import com.example.backend.service.ticketInspection.TicketInspectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -45,6 +46,21 @@ public class TicketInspectionControllerTest {
                                 .jwt(jwt -> jwt.subject("inspectorUser"))))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
+    }
+
+    @Test
+    @WithMockUser(roles = "INSPECTOR")
+    void shouldReturnOkAndFalse_whenValidateTicketIsNotSuccessful() throws Exception {
+        InspectTicketRequestDTO request = new InspectTicketRequestDTO();
+        Mockito.when(ticketInspectionService.validateTicket(any(), eq("inspectorUser"))).thenReturn(false);
+
+        mockMvc.perform(post("/api/ticket-inspection")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(jwt().authorities(createAuthorityList("ROLE_INSPECTOR"))
+                                .jwt(jwt -> jwt.subject("inspectorUser"))))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
     }
 
     @Test
